@@ -55,9 +55,6 @@ FRAMEWIDTH=$((WIDTH/COLS))
 # TODO
 # nie działa dla małych obrazów wejściowych!
 FRAMEHEIGHT=$((FRAMEWIDTH*PATTERNHEIGHT/PATTERNWIDTH))
-identify $INPUTFILE
-
-echo $TMPDIR
 
 echo "Input image:"
 echo $WIDTH
@@ -69,9 +66,8 @@ ROW=0
 COL=0
 
 while [ $y -lt $HEIGHT ]; do
-	echo $ROW
 	while [ $x -lt $WIDTH ]; do
-		echo -n $COL" "
+		echo -ne "Row: "$ROW" "$((COL*100/COLS))"%\r"
 		SCOLOUR=`convert $INPUTFILE -crop ${FRAMEWIDTH}x${FRAMEHEIGHT}+${x}+${y} +repage -scale 1x1\! -format '%[pixel:s]' info:-`
 		MINDISTANCE=100
 		for key in "${!CARDS[@]}"; do
@@ -92,16 +88,15 @@ while [ $y -lt $HEIGHT ]; do
 		x=$((x+FRAMEWIDTH))
 		COL=$((COL+1))
 	done
-	echo " "
 	x=0
 	COL=0
 	y=$((y+FRAMEHEIGHT))
 	ROW=$((ROW+1))
 done
 convert -append $TMPDIR/r-???.png $OUTPUTFILE
-echo $OUTPUTFILE
 
 rm -rf $TMPDIR
+
 for key in "${!PIECES[@]}"; do
 	if [ ${PIECES[$key]} -gt 0 ]; then
 		echo "$key => ${PIECES[$key]}";
