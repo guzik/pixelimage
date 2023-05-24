@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-# N=`date +%s%N`
-# export PS4='+[$(((`date +%s%N`-$N)/1000000))ms][${BASH_SOURCE}:${LINENO}]: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'; set -x;
-
 TMPDIR=`mktemp -d`
 INPUTFILE=${@: -1}
 PATTERNDIR="pattern"
@@ -10,7 +7,7 @@ COLS=30
 
 trap 'rm -rf -- "$TMPDIR"' EXIT
 
-while getopts p:c:i:o: FLAG; do
+while getopts p:c:i:o:v FLAG; do
 	case $FLAG in
 		p)
 			PATTERNDIR=$OPTARG
@@ -25,6 +22,11 @@ while getopts p:c:i:o: FLAG; do
 		o)
 			OUTPUTFILE=$OPTARG
 			;;
+		v)
+			N=`date +%s%N`
+			export PS4='+[$(((`date +%s%N`-$N)/1000000))ms][${BASH_SOURCE}:${LINENO}]: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'; set -x;
+			;;
+
 	esac
 done
 
