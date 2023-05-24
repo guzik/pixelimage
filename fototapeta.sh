@@ -10,7 +10,7 @@ COLS=30
 
 trap 'rm -rf -- "$TMPDIR"' EXIT
 
-while getopts p:c:i: FLAG; do
+while getopts p:c:i:o: FLAG; do
 	case $FLAG in
 		p)
 			PATTERNDIR=$OPTARG
@@ -20,6 +20,10 @@ while getopts p:c:i: FLAG; do
 			;;
 		i)
 			INPUTFILE=$OPTARG
+			OUTPUTFILE="${INPUTFILE%.*}-outxx.png"
+			;;
+		o)
+			OUTPUTFILE=$OPTARG
 			;;
 	esac
 done
@@ -37,32 +41,25 @@ for file in $PATTERNDIR/*; do
 	PATTERNHEIGHT=`identify -format "%[fx:h]" $file`
 done
 
-# for key in "${!PIECES[@]}"; do echo "$key => ${PIECES[$key]}"; done
-
 WIDTH=`identify -format "%[fx:w]" $INPUTFILE`
-echo $WIDTH
-echo $COLS
-echo $(( $WIDTH%$COLS ))
-echo $(( $WIDTH/$COLS ))
-if [[ $WIDTH%$COLS > 0 ]]; then
-	WIDTH=$(( (($WIDTH/$COLS)+1)*$COLS ))
-	convert $INPUTFILE -resize $WIDTH^x74 $TMPDIR/tmp.png
+if [[ $((WIDTH%COLS)) > 0 ]]; then
+	# zmiana rozmiaru wejściowego obrazka do wielokrotności "kafelków"
+	WIDTH=$(( ((WIDTH/COLS)+1)*COLS ))
+	convert $INPUTFILE -resize $WIDTH $TMPDIR/tmp.png
 	INPUTFILE=$TMPDIR/tmp.png
-else
-	WIDTH=$(( $WIDTH/$COLS ))
 fi
 HEIGHT=`identify -format "%[fx:h]" $INPUTFILE`
-FRAMEWIDTH=$(($WIDTH/$COLS))
-FRAMEHEIGHT=$(($FRAMEWIDTH*$PATTERNHEIGHT/$PATTERNWIDTH))
+FRAMEWIDTH=$((WIDTH/COLS))
+# TODO
+# nie działa dla małych obrazów wejściowych!
+FRAMEHEIGHT=$((FRAMEWIDTH*PATTERNHEIGHT/PATTERNWIDTH))
+identify $INPUTFILE
 
 echo $TMPDIR
 
 echo "Input image:"
 echo $WIDTH
 echo $HEIGHT
-# echo "Output image:"
-# echo $((($WIDTH+$FRAMEWIDTH-1)/$FRAMEWIDTH*8))" mm"
-# echo $((($HEIGHT+$FRAMEHEIGHT-1)/$FRAMEHEIGHT*8))" mm"
 
 x=0
 y=0
@@ -73,8 +70,7 @@ while [ $y -lt $HEIGHT ]; do
 	echo $ROW
 	while [ $x -lt $WIDTH ]; do
 		echo -n $COL" "
-		convert $INPUTFILE -crop ${FRAMEWIDTH}x${FRAMEHEIGHT}+${x}+${y} +repage $TMPDIR/out-cropped-${ROW}-${COL}.png
-		SCOLOUR=`convert $TMPDIR/out-cropped-${ROW}-${COL}.png -scale 1x1\! -format '%[pixel:s]' info:-`
+		SCOLOUR=`convert $INPUTFILE -crop ${FRAMEWIDTH}x${FRAMEHEIGHT}+${x}+${y} +repage -scale 1x1\! -format '%[pixel:s]' info:-`
 		MINDISTANCE=100
 		for key in "${!CARDS[@]}"; do
 			DISTANCE=`compare -metric FUZZ xc:${SCOLOUR} xc:"${CARDS[$key]}" -format "%[distortion]" null: 2>/dev/null`
@@ -84,19 +80,24 @@ while [ $y -lt $HEIGHT ]; do
 				LASTCOLOUR=$key
 			fi
 		done
-		cp $LASTCOLOUR $TMPDIR/f-$(printf "%03d" $COL).png
-		((PIECES[$LASTCOLOUR]=PIECES[$LASTCOLOUR]+1))
-		x=$(($x+$FRAMEWIDTH))
-		COL=$(($COL+1))
+		if [ $x -eq 0 ]; then
+			cp $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW).png
+		else
+			convert +append $TMPDIR/r-$(printf "%03d" $ROW).png $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png
+			mv $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png $TMPDIR/r-$(printf "%03d" $ROW).png
+		fi
+		PIECES[$LASTCOLOUR]=$((PIECES[$LASTCOLOUR]+1))
+		x=$((x+FRAMEWIDTH))
+		COL=$((COL+1))
 	done
 	echo " "
-	convert +append $TMPDIR/f-???.png $TMPDIR/r-$(printf "%03d" $ROW).png
 	x=0
 	COL=0
-	y=$(($y+$FRAMEHEIGHT))
-	ROW=$(($ROW+1))
+	y=$((y+FRAMEHEIGHT))
+	ROW=$((ROW+1))
 done
-convert -append $TMPDIR/r-???.png out.png
+convert -append $TMPDIR/r-???.png $OUTPUTFILE
+echo $OUTPUTFILE
 
 rm -rf $TMPDIR
 for key in "${!PIECES[@]}"; do
