@@ -17,7 +17,7 @@ while getopts p:c:i:o:v FLAG; do
 			;;
 		i)
 			INPUTFILE=$OPTARG
-			OUTPUTFILE="${INPUTFILE%.*}-outxx.png"
+			OUTPUTFILE="${INPUTFILE%.*}-$COLS.png"
 			;;
 		o)
 			OUTPUTFILE=$OPTARG
@@ -42,6 +42,10 @@ for file in $PATTERNDIR/*; do
 	PATTERNWIDTH=`identify -format "%[fx:w]" $file`
 	PATTERNHEIGHT=`identify -format "%[fx:h]" $file`
 done
+# source lego.array
+# for key in "${!CARDS[@]}"; do
+# 	echo "$key => ${CARDS[$key]}";
+# done
 
 WIDTH=`identify -format "%[fx:w]" $INPUTFILE`
 if [[ $((WIDTH%COLS)) > 0 ]]; then
@@ -57,8 +61,10 @@ FRAMEWIDTH=$((WIDTH/COLS))
 FRAMEHEIGHT=$((FRAMEWIDTH*PATTERNHEIGHT/PATTERNWIDTH))
 
 echo "Input image:"
-echo $WIDTH
-echo $HEIGHT
+echo $WIDTH"x"$HEIGHT
+# TODO
+# ilość rzędów zależna od zaokrąglenia
+echo $COLS"x"$((HEIGHT/FRAMEHEIGHT))
 
 x=0
 y=0
@@ -67,7 +73,7 @@ COL=0
 
 while [ $y -lt $HEIGHT ]; do
 	while [ $x -lt $WIDTH ]; do
-		echo -ne "Row: "$ROW" "$((COL*100/COLS))"%\r"
+		echo -ne "Row: "$ROW" "$((COL*100/COLS))"%  \r"
 		SCOLOUR=`convert $INPUTFILE -crop ${FRAMEWIDTH}x${FRAMEHEIGHT}+${x}+${y} +repage -scale 1x1\! -format '%[pixel:s]' info:-`
 		MINDISTANCE=100
 		for key in "${!CARDS[@]}"; do
@@ -88,12 +94,18 @@ while [ $y -lt $HEIGHT ]; do
 		x=$((x+FRAMEWIDTH))
 		COL=$((COL+1))
 	done
+	if [ $y -eq 0 ]; then
+		cp $TMPDIR/r-000.png $OUTPUTFILE
+	else
+		convert -append $OUTPUTFILE $TMPDIR/r-$(printf "%03d" $ROW).png $TMPDIR/tmpout.png
+		mv $TMPDIR/tmpout.png $OUTPUTFILE
+	fi
 	x=0
 	COL=0
 	y=$((y+FRAMEHEIGHT))
 	ROW=$((ROW+1))
 done
-convert -append $TMPDIR/r-???.png $OUTPUTFILE
+# convert -append $TMPDIR/r-???.png $OUTPUTFILE
 
 rm -rf $TMPDIR
 

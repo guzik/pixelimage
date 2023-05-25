@@ -1,6 +1,0 @@
-lego/4073darkpurple.png => 55
-lego/4073white.png => 2514
-lego/4073black.png => 292
-lego/4073lightgray.png => 149
-lego/4073tan.png => 200
-lego/4073brightpink.png => 54
