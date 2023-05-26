@@ -1,0 +1,32 @@
+declare -A CARDS
+declare -A PIECES
+CARDS["lego/4073black.png"]="srgba(39,37,31)"
+CARDS["lego/4073blue.png"]="srgba(0,61,165)"
+CARDS["lego/4073brightpink.png"]="srgba(241,167,220)"
+CARDS["lego/4073darkpurple.png"]="srgba(51,0,114)"
+CARDS["lego/4073green.png"]="srgba(0,132,61)"
+CARDS["lego/4073lime.png"]="srgba(181,189,0)"
+CARDS["lego/4073mediumazure.png"]="srgba(113,197,232)"
+CARDS["lego/4073mediumnougat.png"]="chocolate"
+CARDS["lego/4073orange.png"]="srgba(246,141,46)"
+CARDS["lego/4073red.png"]="srgba(239,51,64)"
+CARDS["lego/4073reddishbrown.png"]="srgba(122,62,58)"
+CARDS["lego/4073tan.png"]="srgba(211,188,141)"
+CARDS["lego/4073white.png"]="srgba(217,217,214)"
+CARDS["lego/4073yellow.png"]="srgba(255,205,0)"
+CARDS["lego/4073lightbluishgray.png"]="srgba(162,170,173)"
+
+# lego/4073black.png
+# lego/4073blue.png
+# lego/4073brightpink.png
+# lego/4073darkpurple.png
+# lego/4073green.png
+# lego/4073lime.png
+# lego/4073mediumazure.png
+# lego/4073mediumnougat.png
+# lego/4073orange.png
+# lego/4073red.png
+# lego/4073reddishbrown.png
+# lego/4073tan.png
+# lego/4073white.png
+# lego/4073yellow.png

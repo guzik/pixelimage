@@ -1,0 +1,4 @@
+48x54
+lego/4073orange.png => 728
+lego/4073tan.png => 222
+lego/4073lightbluishgray.png => 1642

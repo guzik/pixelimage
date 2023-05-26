@@ -42,7 +42,7 @@ for file in $PATTERNDIR/*; do
 	PATTERNWIDTH=`identify -format "%[fx:w]" $file`
 	PATTERNHEIGHT=`identify -format "%[fx:h]" $file`
 done
-# source lego.array
+source lego.array
 # for key in "${!CARDS[@]}"; do
 # 	echo "$key => ${CARDS[$key]}";
 # done
@@ -73,7 +73,7 @@ COL=0
 
 while [ $y -lt $HEIGHT ]; do
 	while [ $x -lt $WIDTH ]; do
-		echo -ne "Row: "$ROW" "$((COL*100/COLS))"%  \r"
+		echo -ne "Row "$ROW": "$((COL*100/COLS))"%  \r"
 		SCOLOUR=`convert $INPUTFILE -crop ${FRAMEWIDTH}x${FRAMEHEIGHT}+${x}+${y} +repage -scale 1x1\! -format '%[pixel:s]' info:-`
 		MINDISTANCE=100
 		for key in "${!CARDS[@]}"; do
