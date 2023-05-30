@@ -7,7 +7,7 @@ COLS=30
 
 trap 'rm -rf -- "$TMPDIR"' EXIT
 
-while getopts p:c:i:o:v FLAG; do
+while getopts p:c:r:i:o:v FLAG; do
 	case $FLAG in
 		p)
 			PATTERNDIR=$OPTARG
@@ -15,8 +15,15 @@ while getopts p:c:i:o:v FLAG; do
 		c)
 			COLS=$OPTARG
 			;;
+		r)
+			# TODO
+			# dodać parametr i wybrać COLS lub ROWS wg ratio
+			# ROWS=$OPTARG
+			;;
 		i)
 			INPUTFILE=$OPTARG
+			# TODO
+			# $COLS nie istnieje jeśli podamy -c po -i
 			OUTPUTFILE="${INPUTFILE%.*}-$COLS.png"
 			;;
 		o)
@@ -35,6 +42,8 @@ shift $(($OPTIND -1))
 declare -A CARDS
 declare -A PIECES
 for file in $PATTERNDIR/*; do
+	# TODO
+	# czytanie z pliku .array zamiast poniższego
 	# CARDS[${file}]+=`convert $file -scale 1x1\! -format '%[pixel:s]' info:-`
 	PIECES[${file}]=0
 	# TODO
@@ -43,9 +52,6 @@ for file in $PATTERNDIR/*; do
 	PATTERNHEIGHT=`identify -format "%[fx:h]" $file`
 done
 source lego.array
-# for key in "${!CARDS[@]}"; do
-# 	echo "$key => ${CARDS[$key]}";
-# done
 
 WIDTH=`identify -format "%[fx:w]" $INPUTFILE`
 if [[ $((WIDTH%COLS)) > 0 ]]; then
