@@ -14,7 +14,7 @@ CARDS["lego/4073reddishbrown.png"]="srgba(122,62,58)"
 CARDS["lego/4073tan.png"]="srgba(211,188,141)"
 CARDS["lego/4073white.png"]="srgba(217,217,214)"
 CARDS["lego/4073yellow.png"]="srgba(255,205,0)"
-CARDS["lego/4073lightbluishgray.png"]="srgba(162,170,173)"
+# CARDS["lego/4073lightbluishgray.png"]="srgba(162,170,173)"
 
 # lego/4073black.png
 # lego/4073blue.png

@@ -35,7 +35,7 @@ shift $(($OPTIND -1))
 declare -A CARDS
 declare -A PIECES
 for file in $PATTERNDIR/*; do
-	CARDS[${file}]+=`convert $file -scale 1x1\! -format '%[pixel:s]' info:-`
+	# CARDS[${file}]+=`convert $file -scale 1x1\! -format '%[pixel:s]' info:-`
 	PIECES[${file}]=0
 	# TODO
 	# sprawdzic czy wszystkie maja ten sam rozmiar
@@ -87,6 +87,8 @@ while [ $y -lt $HEIGHT ]; do
 		if [ $x -eq 0 ]; then
 			cp $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW).png
 		else
+			# TODO
+			# morgify?
 			convert +append $TMPDIR/r-$(printf "%03d" $ROW).png $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png
 			mv $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png $TMPDIR/r-$(printf "%03d" $ROW).png
 		fi
@@ -97,6 +99,8 @@ while [ $y -lt $HEIGHT ]; do
 	if [ $y -eq 0 ]; then
 		cp $TMPDIR/r-000.png $OUTPUTFILE
 	else
+		# TODO
+		# morgify?
 		convert -append $OUTPUTFILE $TMPDIR/r-$(printf "%03d" $ROW).png $TMPDIR/tmpout.png
 		mv $TMPDIR/tmpout.png $OUTPUTFILE
 	fi
