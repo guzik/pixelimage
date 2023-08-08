@@ -94,7 +94,7 @@ while [ $y -lt $HEIGHT ]; do
 			cp $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW).png
 		else
 			# TODO
-			# morgify?
+			# mogrify?
 			convert +append $TMPDIR/r-$(printf "%03d" $ROW).png $LASTCOLOUR $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png
 			mv $TMPDIR/r-$(printf "%03d" $ROW)-$(printf "%03d" $COL).png $TMPDIR/r-$(printf "%03d" $ROW).png
 		fi
@@ -106,7 +106,7 @@ while [ $y -lt $HEIGHT ]; do
 		cp $TMPDIR/r-000.png $OUTPUTFILE
 	else
 		# TODO
-		# morgify?
+		# mogrify?
 		convert -append $OUTPUTFILE $TMPDIR/r-$(printf "%03d" $ROW).png $TMPDIR/tmpout.png
 		mv $TMPDIR/tmpout.png $OUTPUTFILE
 	fi
