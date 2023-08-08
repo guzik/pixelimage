@@ -1,0 +1,8 @@
+48x48
+lego/4073white.png => 1144
+lego/4073black.png => 42
+lego/4073orange.png => 1
+lego/4073darkorange.png => 504
+lego/4073reddishbrown.png => 388
+lego/4073tan.png => 138
+lego/4073lightbluishgray.png => 87
